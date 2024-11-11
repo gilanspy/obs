@@ -3,6 +3,7 @@ package com.gilan.test.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gilan.test.model.request.OrderRequest;
+import com.gilan.test.model.response.ApiResponse;
 import com.gilan.test.model.response.OrderResponse;
 import com.gilan.test.service.OrderService;
 
@@ -23,33 +25,41 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/orders")
 public class OrderController {
 
-	@Autowired
-	private OrderService orderService;
+    @Autowired
+    private OrderService orderService;
 
-	@GetMapping
-	public Page<OrderResponse> listOrders(Pageable pageable) {
-		return orderService.listOrders(pageable);
-	}
+    @GetMapping
+    public ResponseEntity<ApiResponse<Page<OrderResponse>>> listOrders(Pageable pageable) {
+        Page<OrderResponse> orders = orderService.listOrders(pageable);
+        ApiResponse<Page<OrderResponse>> response = new ApiResponse<>("success", orders);
+        return ResponseEntity.ok(response);
+    }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<OrderResponse> getOrder(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<OrderResponse>> getOrder(@PathVariable Long id) {
+        OrderResponse order = orderService.getOrderById(id);
+        ApiResponse<OrderResponse> response = new ApiResponse<>("success", order);
+        return ResponseEntity.ok(response);
+    }
 
-		return ResponseEntity.ok(orderService.getOrderById(id));
-	}
+    @PostMapping
+    public ResponseEntity<ApiResponse<OrderResponse>> createOrder(@Valid @RequestBody OrderRequest order) {
+        OrderResponse savedOrder = orderService.saveOrder(order);
+        ApiResponse<OrderResponse> response = new ApiResponse<>("success", savedOrder);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 
-	@PostMapping
-	public OrderResponse createOrder(@Valid @RequestBody OrderRequest order) {
-		return orderService.saveOrder(order);
-	}
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<OrderResponse>> updateOrder(@PathVariable Long id, @Valid @RequestBody OrderRequest orderDetails) {
+        OrderResponse updatedOrder = orderService.updateOrder(id, orderDetails);
+        ApiResponse<OrderResponse> response = new ApiResponse<>("success", updatedOrder);
+        return ResponseEntity.ok(response);
+    }
 
-	@PutMapping("/{id}")
-	public OrderResponse updateOrder(@PathVariable Long id,@Valid  @RequestBody OrderRequest orderDetails) {
-		return orderService.updateOrder(id, orderDetails);
-	}
-
-	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
-		orderService.deleteOrder(id);
-		return ResponseEntity.ok("order berhasil di delete");
-	}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteOrder(@PathVariable Long id) {
+        orderService.deleteOrder(id);
+        ApiResponse<String> response = new ApiResponse<>("success", "Order berhasil di delete");
+        return ResponseEntity.ok(response);
+    }
 }

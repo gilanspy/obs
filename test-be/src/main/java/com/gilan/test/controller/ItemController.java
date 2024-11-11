@@ -3,6 +3,7 @@ package com.gilan.test.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gilan.test.model.request.ItemRequest;
+import com.gilan.test.model.response.ApiResponse;
 import com.gilan.test.model.response.ItemResponse;
 import com.gilan.test.service.ItemService;
 
@@ -27,28 +29,37 @@ public class ItemController {
     private ItemService itemService;
 
     @GetMapping
-    public Page<ItemResponse> listItems(Pageable pageable) {
-        return itemService.listItems(pageable);
+    public ResponseEntity<ApiResponse<Page<ItemResponse>>> listItems(Pageable pageable) {
+        Page<ItemResponse> items = itemService.listItems(pageable);
+        ApiResponse<Page<ItemResponse>> response = new ApiResponse<>("success", items);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ItemResponse> getItem(@PathVariable Long id) {
-        return ResponseEntity.ok(itemService.getItemById(id));
+    public ResponseEntity<ApiResponse<ItemResponse>> getItem(@PathVariable Long id) {
+        ItemResponse item = itemService.getItemById(id);
+        ApiResponse<ItemResponse> response = new ApiResponse<>("success", item);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<ItemResponse> createItem(@Valid @RequestBody ItemRequest item){
-        return ResponseEntity.ok(itemService.saveItem(item));
+    public ResponseEntity<ApiResponse<ItemResponse>> createItem(@Valid @RequestBody ItemRequest item) {
+        ItemResponse savedItem = itemService.saveItem(item);
+        ApiResponse<ItemResponse> response = new ApiResponse<>("success", savedItem);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ItemResponse updateItem(@PathVariable Long id,@Valid  @RequestBody ItemRequest itemDetails) {
-        return itemService.updateItem(id, itemDetails);
+    public ResponseEntity<ApiResponse<ItemResponse>> updateItem(@PathVariable Long id, @Valid @RequestBody ItemRequest itemDetails) {
+        ItemResponse updatedItem = itemService.updateItem(id, itemDetails);
+        ApiResponse<ItemResponse> response = new ApiResponse<>("success", updatedItem);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteItem(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<String>> deleteItem(@PathVariable Long id) {
         itemService.deleteItem(id);
-        return ResponseEntity.ok("item berhasil di delete");
+        ApiResponse<String> response = new ApiResponse<>("success", "Item berhasil di delete");
+        return ResponseEntity.ok(response);
     }
 }
