@@ -17,6 +17,8 @@ import com.gilan.test.model.request.ItemRequest;
 import com.gilan.test.model.response.ItemResponse;
 import com.gilan.test.service.ItemService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/items")
 public class ItemController {
@@ -35,12 +37,12 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemResponse createItem(@RequestBody ItemRequest item) {
-        return itemService.saveItem(item);
+    public ResponseEntity<ItemResponse> createItem(@Valid @RequestBody ItemRequest item){
+        return ResponseEntity.ok(itemService.saveItem(item));
     }
 
     @PutMapping("/{id}")
-    public ItemResponse updateItem(@PathVariable Long id, @RequestBody ItemRequest itemDetails) {
+    public ItemResponse updateItem(@PathVariable Long id,@Valid  @RequestBody ItemRequest itemDetails) {
         return itemService.updateItem(id, itemDetails);
     }
 

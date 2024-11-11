@@ -6,9 +6,11 @@ import org.springframework.data.domain.Pageable;
 import com.gilan.test.model.request.OrderRequest;
 import com.gilan.test.model.response.OrderResponse;
 
+import jakarta.validation.Valid;
+
 public interface OrderService {
     
-    OrderResponse saveOrder(OrderRequest orderRequest);
+    OrderResponse saveOrder(@Valid OrderRequest orderRequest);
     OrderResponse getOrderById(Long id);
     Page<OrderResponse> listOrders(Pageable pageable);
     OrderResponse updateOrder(Long id, OrderRequest orderRequest);

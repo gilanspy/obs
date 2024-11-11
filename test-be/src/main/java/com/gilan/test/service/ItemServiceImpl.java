@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import com.gilan.test.exception.AppException;
 import com.gilan.test.model.ErrorType;
@@ -16,12 +17,15 @@ import com.gilan.test.persistence.entity.Item;
 import com.gilan.test.persistence.repository.ItemRepository;
 
 @Service
+@Validated
 public class ItemServiceImpl implements ItemService {
     @Autowired
     private ItemRepository itemRepository;
 
+    
     @Override
-    public ItemResponse saveItem(ItemRequest itemRequest) {
+    public ItemResponse saveItem(ItemRequest itemRequest){
+
     	 Item item = new Item();
          item.setName(itemRequest.getName());
          item.setPrice(itemRequest.getPrice());

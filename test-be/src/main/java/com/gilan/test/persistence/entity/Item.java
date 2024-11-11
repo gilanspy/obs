@@ -6,15 +6,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "item")
+@Table(name = "item", uniqueConstraints = {
+@UniqueConstraint(columnNames = {"name"})})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,13 +24,13 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Name is mandatory")
-    @Column(unique = true)
+    @Column(nullable = false)
     private String name;
 
-    @NotNull(message = "Price is mandatory")
+    @Column(nullable = false)
     private Integer price;
 
+    @Column(nullable = true)
     private Integer stock;
 
 }

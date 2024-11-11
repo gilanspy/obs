@@ -17,6 +17,8 @@ import com.gilan.test.model.request.OrderRequest;
 import com.gilan.test.model.response.OrderResponse;
 import com.gilan.test.service.OrderService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
@@ -36,12 +38,12 @@ public class OrderController {
 	}
 
 	@PostMapping
-	public OrderResponse createOrder(@RequestBody OrderRequest order) {
+	public OrderResponse createOrder(@Valid @RequestBody OrderRequest order) {
 		return orderService.saveOrder(order);
 	}
 
 	@PutMapping("/{id}")
-	public OrderResponse updateOrder(@PathVariable Long id, @RequestBody OrderRequest orderDetails) {
+	public OrderResponse updateOrder(@PathVariable Long id,@Valid  @RequestBody OrderRequest orderDetails) {
 		return orderService.updateOrder(id, orderDetails);
 	}
 

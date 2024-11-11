@@ -17,6 +17,8 @@ import com.gilan.test.model.request.InventoryRequest;
 import com.gilan.test.model.response.InventoryResponse;
 import com.gilan.test.service.InventoryService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/inventory")
 public class InventoryController {
@@ -35,12 +37,12 @@ public class InventoryController {
 	}
 
 	@PostMapping
-	public InventoryResponse createInventory(@RequestBody InventoryRequest inventory) {
+	public InventoryResponse createInventory(@Valid @RequestBody InventoryRequest inventory) {
 		return inventoryService.saveInventory(inventory);
 	}
 
 	@PutMapping("/{id}")
-	public InventoryResponse updateInventory(@PathVariable Long id, @RequestBody InventoryRequest inventoryDetails) {
+	public InventoryResponse updateInventory(@PathVariable Long id,@Valid  @RequestBody InventoryRequest inventoryDetails) {
 		return inventoryService.updateInventory(id, inventoryDetails);
 	}
 

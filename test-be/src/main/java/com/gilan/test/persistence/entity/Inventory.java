@@ -1,5 +1,6 @@
 package com.gilan.test.persistence.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -9,7 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,15 +31,23 @@ public class Inventory {
     @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 
-    @NotNull(message = "Quantity is mandatory")
+    @Column(nullable = false)
     private Integer quantity;
 
-    @NotNull(message = "Type is mandatory")
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Type type;
 
     public enum Type {
-        T, W 
+        T, W ;
+    	 public static boolean isValidType(String value) {
+    	        for (Type type : Type.values()) {
+    	            if (type.name().equals(value)) {
+    	                return true;
+    	            }
+    	        }
+    	        return false;
+    	    }
     }
 
 }

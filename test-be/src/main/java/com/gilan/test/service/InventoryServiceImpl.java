@@ -7,15 +7,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import com.gilan.test.exception.AppException;
 import com.gilan.test.model.ErrorType;
 import com.gilan.test.model.request.InventoryRequest;
 import com.gilan.test.model.response.InventoryResponse;
 import com.gilan.test.persistence.entity.Inventory;
+import com.gilan.test.persistence.entity.Inventory.Type;
 import com.gilan.test.persistence.entity.Item;
 import com.gilan.test.persistence.repository.InventoryRepository;
+
 @Service
+@Validated
 public class InventoryServiceImpl implements InventoryService {
 
     @Autowired
@@ -26,6 +30,11 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public InventoryResponse saveInventory(InventoryRequest inventoryRequest) {
+    	
+    	  if (!Type.isValidType(inventoryRequest.getType())) {
+    	        throw new AppException("Type must be either 'T' (Top Up) or 'W' (Withdraw)", ErrorType.INVALID_TYPE);
+    	    }
+    	
         Item item = itemService.getEntityById(inventoryRequest.getItemId());
 
         Inventory inventory = new Inventory();
