@@ -47,6 +47,6 @@ public class InventoryController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteInventory(@PathVariable Long id) {
 		inventoryService.deleteInventory(id);
-		return ResponseEntity.ok("item berhasil di delete");
+		return ResponseEntity.ok("inventory berhasil di delete");
 	}
 }
