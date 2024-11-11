@@ -7,4 +7,5 @@ import com.gilan.test.persistence.entity.Item;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
+	 boolean existsByName(String name); 
 }

@@ -23,9 +23,17 @@ public class ItemServiceImpl implements ItemService {
     private ItemRepository itemRepository;
 
     
+    private void checkIfNameExists(String name) {
+        if (itemRepository.existsByName(name)) {
+            throw new AppException("Name telah terpakai", ErrorType.INVALID_REQUEST);
+        }
+    }
+
+    
     @Override
     public ItemResponse saveItem(ItemRequest itemRequest){
 
+    	checkIfNameExists(itemRequest.getName());
     	 Item item = new Item();
          item.setName(itemRequest.getName());
          item.setPrice(itemRequest.getPrice());
@@ -60,10 +68,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemResponse updateItem(Long id, ItemRequest itemDetails) {
+    public ItemResponse updateItem(Long id, ItemRequest itemRequest) {
+    	checkIfNameExists(itemRequest.getName());
     	Item item = getEntityById(id);
-        item.setName(itemDetails.getName());
-        item.setPrice(itemDetails.getPrice());
+        item.setName(itemRequest.getName());
+        item.setPrice(itemRequest.getPrice());
         itemRepository.save(item);
         return mapToResponse(item);
     }
